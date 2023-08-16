@@ -6,7 +6,6 @@ const cotizador = document.querySelector("#contenedor-cotizador")
 const vaciarCarro = document.querySelector("#vaciar-carro")
 const botonComprar = document.querySelector("#boton-comprar")
 const msjComprado = document.querySelector("#carro-comprado")
-let totalValidado
 let botonEliminarProducto // Variable declarada antes para luego asignarle los botones de 'Eliminar Producto'
 
 let carro = JSON.parse(localStorage.getItem("carrito"))
