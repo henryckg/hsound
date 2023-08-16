@@ -6,6 +6,7 @@ const cotizador = document.querySelector("#contenedor-cotizador")
 const vaciarCarro = document.querySelector("#vaciar-carro")
 const botonComprar = document.querySelector("#boton-comprar")
 const msjComprado = document.querySelector("#carro-comprado")
+let totalValidado
 let botonEliminarProducto // Variable declarada antes para luego asignarle los botones de 'Eliminar Producto'
 
 let carro = JSON.parse(localStorage.getItem("carrito"))
@@ -52,11 +53,12 @@ function cargarCarro(){
         carroAcciones.classList.add("inactive")
         cotizador.classList.add("inactive")
     }
-    
     eliminarProducto()
+    validarTotal()
 }
 
 cargarCarro()
+
 
 
 vaciarCarro.onclick = () =>{
@@ -75,14 +77,16 @@ function eliminarProducto(){
         boton.addEventListener("click", eliminarItem)
 
         function eliminarItem() {
-            const productoEliminado = carro.findIndex(prod => prod.id == boton.id)
-            carro.splice(productoEliminado, 1)
+            const productoEliminado = carro.findIndex(prod => prod.id == boton.id);
+            carro.splice(productoEliminado, 1);
 
-            cargarCarro()
+            localStorage.setItem("carrito", JSON.stringify(carro));
+            cargarCarro();
 
-            localStorage.setItem("carrito", JSON.stringify(carro))
         }
     })
+
+    
 }
 
 
@@ -115,7 +119,7 @@ const fechaEnvio = document.querySelector("#fecha-envio")
 
 const totalPeso = carro.reduce((acumulador, prod) => acumulador + prod.peso, 0);
 const totalPesoVol = carro.reduce((acumulador, prod) => acumulador + prod.pesoVol, 0);
-const totalPrecios = carro.reduce((acumulador, prod) => acumulador + prod.precio, 0);
+const totalPrecios = carro.reduce((acumulador, prod) => acumulador + (prod.precio * prod.cantidad), 0);
 
 botonesRadio.forEach(boton => {
     boton.addEventListener("change", () => {
@@ -175,4 +179,11 @@ function comprarCarro(){
     cotizador.classList.add("inactive")
     contenedorCarro.classList.add("inactive")   
     localStorage.clear()
+}
+
+
+
+function validarTotal(){
+    totalValidado = carro.reduce((acc, prod) => acc + (prod.precio * prod.cantidad), 0)
+    console.log(totalValidado)
 }
