@@ -54,7 +54,6 @@ function cargarCarro(){
         cotizador.classList.add("inactive")
     }
     eliminarProducto()
-    validarTotal()
 }
 
 cargarCarro()
@@ -179,11 +178,4 @@ function comprarCarro(){
     cotizador.classList.add("inactive")
     contenedorCarro.classList.add("inactive")   
     localStorage.clear()
-}
-
-
-
-function validarTotal(){
-    totalValidado = carro.reduce((acc, prod) => acc + (prod.precio * prod.cantidad), 0)
-    console.log(totalValidado)
 }
