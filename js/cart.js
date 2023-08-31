@@ -1,3 +1,4 @@
+const main = document.querySelector("#contenedor-principal")
 const carroVacio = document.querySelector("#carro-vacio")
 const contenedorCarro = document.querySelector("#contenedor-carro")
 const carroProductos = document.querySelector("#carro-productos")
@@ -5,8 +6,11 @@ const carroAcciones = document.querySelector("#carro-acciones")
 const cotizador = document.querySelector("#contenedor-cotizador")
 const vaciarCarro = document.querySelector("#vaciar-carro")
 const botonComprar = document.querySelector("#boton-comprar")
-const msjComprado = document.querySelector("#carro-comprado")
-let totalValidado
+const totalCarrito = document.querySelector("#total")
+
+
+let valorAsegurado = 0
+let resultado = 0
 let botonEliminarProducto // Variable declarada antes para luego asignarle los botones de 'Eliminar Producto'
 
 let carro = JSON.parse(localStorage.getItem("carrito"))
@@ -42,7 +46,7 @@ function cargarCarro(){
                 <h4>USD $${prod.precio * prod.cantidad}</h4>    
             </div>
             <button id="${prod.id}" class="carro-producto-eliminar">
-                <i class="bi bi-trash"></i>
+                <i class="bi bi-x-square-fill"></i>
             </button>
         `
             carroProductos.appendChild(div)
@@ -54,18 +58,36 @@ function cargarCarro(){
         cotizador.classList.add("inactive")
     }
     eliminarProducto()
+    validarTotal()
 }
 
 cargarCarro()
 
 
-
 vaciarCarro.onclick = () =>{
-    localStorage.clear()
-    carroVacio.classList.remove("inactive")
-    carroProductos.classList.add("inactive")
-    carroAcciones.classList.add("inactive")
-    cotizador.classList.add("inactive")
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: `${carro.reduce((acc, prod) => acc + prod.cantidad, 0)} productos están por ser eliminados del carrito.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#949494',
+        confirmButtonText: 'Sí, vaciar',
+        cancelButtonText: 'No, cancelar',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.clear()
+            carroVacio.classList.remove("inactive")
+            carroProductos.classList.add("inactive")
+            carroAcciones.classList.add("inactive")
+            cotizador.classList.add("inactive")
+            Swal.fire(
+                'Carrito vacío.',
+                'Los productos han sido eliminados',
+                'success'
+            )
+        }
+    })
 }
 
 
@@ -91,9 +113,9 @@ function eliminarProducto(){
 
 ////// CALCULADORA DE ENVIOS
 
-let resultado = 0
+
 let tarifaEnvio
-let valorAsegurado = 0
+
 const milisegundosPorDia = 86400000
 const plazoTerrestre = 5 * milisegundosPorDia
 const plazoAereo = 3 * milisegundosPorDia
@@ -106,15 +128,13 @@ function calcularFechaEnvio(plazo){
         return fechaFutura.toLocaleDateString()
 }
 
-const seguro = (x) => x * 10 / 100;
 
 const botonAsegurar = document.querySelector("#asegurar");
 const botonesRadio = document.querySelectorAll('input[name="envio"]');
 const valorEnvio = document.querySelector("#valor-envio")
 const valorSeguro = document.querySelector("#valor-seguro")
-const totalCarrito = document.querySelector("#total")
-const fechaEnvio = document.querySelector("#fecha-envio")
 
+const fechaEnvio = document.querySelector("#fecha-envio")
 
 const totalPeso = carro.reduce((acumulador, prod) => acumulador + prod.peso, 0);
 const totalPesoVol = carro.reduce((acumulador, prod) => acumulador + prod.pesoVol, 0);
@@ -135,22 +155,24 @@ botonesRadio.forEach(boton => {
             
             resultado = calcularResultado(totalPeso, totalPesoVol, tarifaEnvio)
             valorEnvio.innerText = `Valor envío: USD $${resultado.toFixed(2)}`
-            actualizarTotal()
+            validarTotal()
 
         }
     })
 })
+
+const seguro = (x) => x * 10 / 100;
 
 function asegurar(){
     botonAsegurar.addEventListener("change", () => {
         if (botonAsegurar.checked) {
             valorAsegurado = seguro(totalPrecios)
             valorSeguro.innerText = `Valor seguro: USD $${valorAsegurado.toFixed(2)}`
-            actualizarTotal()
+            validarTotal()
         } else {
             valorAsegurado = 0
             valorSeguro.innerText = ""
-            actualizarTotal()
+            validarTotal()
         }
     })
 
@@ -164,18 +186,65 @@ function calcularResultado(peso, pesoVol, tarifa) {
     }
 }
 
-function actualizarTotal() {
-    const total = resultado + valorAsegurado + totalPrecios
-    totalCarrito.innerText = `USD $${total.toFixed(2)}`
+
+const formularioCotizador = document.querySelector("#formulario-cotizador")
+
+formularioCotizador.addEventListener("submit", (e) =>{
+    
+    e.preventDefault()
+
+    const checkout = document.createElement("div")
+    checkout.innerHTML = `
+        <form id="formulario-checkout" class="formulario-checkout">
+            <span class="text-checkout">Ingrese sus datos de contacto</span>
+            <input type="text" placeholder="Nombre completo" class="text-input-checkout" required>
+            <input type="email" placeholder="E-mail" class="text-input-checkout" required>
+            <input type="text" placeholder="Dirección de envío" class="text-input-checkout" required>
+            <input type="submit" class="btn-checkout" id="btn-checkout" value="Finalizar compra">
+        </form>
+    `
+
+    checkout.classList.add("contenedor-checkout")
+    main.appendChild(checkout)
+    main.classList.add("efecto-checkout")
+
+    
+    const formularioCheckout = document.querySelector("#formulario-checkout")
+    formularioCheckout.addEventListener("submit", hacerCheckout)
+
+    function hacerCheckout(e){
+        e.preventDefault()
+    
+        Swal.fire(
+            '¡Compra exitosa!',
+            'Muchas gracias por tu compra. Te esperamos pronto',
+            'success'
+        )
+        
+        carroVacio.classList.remove("inactive")
+        checkout.classList.add("inactive")
+        cotizador.classList.add("inactive")
+        carroProductos.classList.add("inactive")
+        carroAcciones.classList.add("inactive")   
+        main.classList.remove("efecto-checkout")
+        localStorage.clear()
+    }
+})
+
+function validarTotal (){
+    let totalValidado = carro.reduce((acc, prod) => acc + (prod.cantidad * prod.precio), 0)
+    let valorTotal = totalValidado + valorAsegurado + resultado
+    totalCarrito.innerText = `USD $${valorTotal.toFixed(2)}`
 }
 
-actualizarTotal()
 
 
-botonComprar.addEventListener("click", comprarCarro)
-function comprarCarro(){
-    msjComprado.classList.remove("inactive")
-    cotizador.classList.add("inactive")
-    contenedorCarro.classList.add("inactive")   
-    localStorage.clear()
-}
+console.log(carro)
+console.log(totalPeso)
+console.log(totalPesoVol)
+console.log(totalPrecios)
+
+
+//Checkout
+
+

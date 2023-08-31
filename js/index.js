@@ -1,39 +1,20 @@
 ////// Array vacio donde se van ingresando los productos
 
-const productos = []
+let stockProductos = []
 
-////// Clase para productos
-
-class Producto{
-    constructor (id, nombre, precio, categoria, imagen, alto, ancho, largo, peso){
-        this.id = id;
-        this.nombre = nombre;
-        this.precio = precio;
-        this.categoria = categoria;
-        this.imagen = imagen;
-        this.cantidad = 1
-        this.alto = alto;
-        this.ancho = ancho;
-        this.largo = largo;
-        this.peso = peso;
-        this.pesoVol = (this.alto * this.ancho * this.largo) / 5000;
-    }
+const cargaBaseDeDatos = async () => {
+    const respuesta = await fetch('./base-de-datos.json')
+    const datos = await respuesta.json()
+    stockProductos = datos
+    cargarTodosProductos()
 }
 
-////// Ingreso de Productos
+cargaBaseDeDatos()
 
-productos.push(new Producto("audifono-01", "AKG K240", 90, "Audífonos", "./img/akg-k240.jpeg", 32, 22, 12, 1.2))
-productos.push(new Producto("audifono-02", "AudioTechnica ATHM50x", 170, "Audífonos", "./img/audiotechnica-athm50x.jpeg", 33, 23, 15, 1.4))
-productos.push(new Producto("audifono-03", "Sony WH-1000XM4", 220, "Audífonos", "./img/sony-wh1000xm4.jpeg", 29, 21, 10, 1))
-productos.push(new Producto("parlante-01", "Adam T7V", 330, "Parlantes", "./img/adam-t7v.jpeg", 42, 29, 34, 3.2))
-productos.push(new Producto("parlante-02", "Genelec 8030C", 550, "Parlantes", "./img/genelec-8030c.jpeg", 37, 26, 30, 2.4))
-productos.push(new Producto("parlante-03", "Yamaha HS8", 250, "Parlantes", "./img/yamaha-hs8.jpeg", 35, 22, 29, 1.8))
-productos.push(new Producto("microfono-01", "Shure SM7B", 440, "Micrófonos", "./img/shure-sm7b.jpeg", 21, 22, 12, 1.2))
-productos.push(new Producto("microfono-02", "AKG C414", 375, "Micrófonos", "./img/akg-c414.jpeg", 19, 12, 8, 1))
-productos.push(new Producto("microfono-03", "Sennheiser MD421", 280, "Micrófonos", "./img/sennheiser-md421.jpeg", 17, 16, 9, 1.1))
 
 ////// LLAMADOS DEL DOM
 
+const body = document.body
 const main = document.querySelector("#main")
 const contenedorProductos = document.querySelector(".contenedor-productos")
 const botonesMenu = document.querySelectorAll(".boton-categoria")
@@ -42,7 +23,28 @@ const botonAudifonos = document.querySelector("#audifonos")
 const botonParlantes = document.querySelector("#parlantes")
 const botonMicrofonos = document.querySelector("#microfonos")
 const tituloCategoria = document.createElement("h2")
+const numeroCarrito = document.querySelector('#numero-carro')
 let botonAgregar // Variable declarada antes para luego asignarle los botones de 'Añadir al Carrito'
+
+
+// Footer
+
+const fecha = new Date()
+const footer = document.createElement("footer")
+
+footer.innerHTML = `
+    <span>H-Sound - ${fecha.getFullYear()} Todos los derechos reservados</span>
+`
+
+footer.style.backgroundColor = '#3d3d3d'
+footer.style.height = '3rem'
+footer.style.color = 'white'
+footer.style.display = 'flex'
+footer.style.justifyContent = 'center'
+footer.style.alignItems = 'center'
+
+body.appendChild(footer)
+
 
 
 /////// FUNCIONES
@@ -51,8 +53,9 @@ function cargarTodosProductos(){
 
     contenedorProductos.innerHTML = ""
     tituloCategoria.innerText = "Todos los productos"
+    main.prepend(tituloCategoria)
 
-    productos.forEach(prod => {
+    stockProductos.forEach(prod => {
 
         const div = document.createElement("div")
         div.classList.add("producto")
@@ -65,7 +68,6 @@ function cargarTodosProductos(){
             </div>
         `
         contenedorProductos.appendChild(div)    
-        main.prepend(tituloCategoria)
     });
     
     agregarAlCarrito()
@@ -76,7 +78,7 @@ function cargarAudifonos(){
 
     contenedorProductos.innerHTML = ""
 
-    const audifonos = productos.filter((prod) => prod.categoria === "Audífonos")
+    const audifonos = stockProductos.filter((prod) => prod.categoria === "Audífonos")
     audifonos.forEach(prod => {
     
         const div = document.createElement("div")
@@ -103,7 +105,7 @@ function cargarParlantes(){
 
     contenedorProductos.innerHTML = ""
 
-    const parlantes = productos.filter((prod) => prod.categoria === "Parlantes")
+    const parlantes = stockProductos.filter((prod) => prod.categoria === "Parlantes")
     parlantes.forEach(prod => {
     
         const div = document.createElement("div")
@@ -129,7 +131,7 @@ function cargarMicrofonos(){
 
     contenedorProductos.innerHTML = ""
 
-    const microfonos = productos.filter((prod) => prod.categoria === "Micrófonos")
+    const microfonos = stockProductos.filter((prod) => prod.categoria === "Micrófonos")
     microfonos.forEach(prod => {
     
         const div = document.createElement("div")
@@ -151,27 +153,6 @@ function cargarMicrofonos(){
     agregarAlCarrito()
 }
 
-function agregarAlCarrito(){
-
-    botonAgregar = document.querySelectorAll(".boton-agregar")
-
-    botonAgregar.forEach(boton => {
-        boton.addEventListener("click", agregarProducto)
-
-        function agregarProducto(){
-            const productoAgregado = productos.find(prod => prod.id == boton.id)
-            
-            if(arrayCarro.some(prod => prod.id == boton.id)){
-                productoAgregado.cantidad++
-            } else {
-                arrayCarro.push(productoAgregado)
-            }
-
-            localStorage.setItem("carrito", JSON.stringify(arrayCarro))
-        }   
-    })
-}
-
 
 cargarTodosProductos()
 
@@ -183,13 +164,53 @@ botonParlantes.addEventListener("click", cargarParlantes)
 botonMicrofonos.addEventListener("click", cargarMicrofonos)
 
 // Array para luego incluirlo en el LocalStorage
+
 let arrayCarro
-const carro = JSON.parse(localStorage.getItem("carrito"))
+let carro = localStorage.getItem("carrito")
 
-carro ? arrayCarro = carro : arrayCarro = []
+carro ? arrayCarro = JSON.parse(carro) : arrayCarro = []
+generarNumero()
 
+function agregarAlCarrito(){
 
+    botonAgregar = document.querySelectorAll(".boton-agregar")
 
+    botonAgregar.forEach(boton => {
+        boton.addEventListener("click", agregarProducto)
 
+        function agregarProducto(){
 
+            const productoAgregado = stockProductos.find(prod => prod.id == boton.id)
+            
+            if(arrayCarro.some(prod => prod.id == boton.id)){
+                productoAgregado.cantidad++
+                productoAgregado.pesoVol = ((productoAgregado.alto * productoAgregado.ancho * productoAgregado.largo) / 5000) * productoAgregado.cantidad
+            } else {
+                arrayCarro.push(productoAgregado)
+                productoAgregado.pesoVol = (productoAgregado.alto * productoAgregado.ancho * productoAgregado.largo) / 5000
+            }
 
+            Toastify({
+                text: `${productoAgregado.nombre} fue agregado al carro`,
+                duration: 3000,
+                destination: "./pages/cart.html",
+                close: true,
+                gravity: "bottom",
+                position: "right",
+                stopOnFocus: true,
+                style: {
+                background: "linear-gradient(to right, #3d3d3d, #939393)",
+                },
+                onClick: function(){} // Callback after click
+            }).showToast();
+
+            localStorage.setItem("carrito", JSON.stringify(arrayCarro))
+            generarNumero()
+        }   
+    })
+}
+
+function generarNumero() {
+    let cantidadProductos = arrayCarro.reduce((acc, prod) => acc + prod.cantidad, 0)
+    numeroCarrito.innerText = cantidadProductos
+}

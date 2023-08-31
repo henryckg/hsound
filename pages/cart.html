@@ -27,7 +27,7 @@
             <a href="../pages/cart.html" class="boton-carrito"><i class="bi bi-cart2"></i></a>
         </div>
     </header>
-    <main class="contenedor-principal">
+    <main class="contenedor-principal" id="contenedor-principal">
         <h2>Carro de Compras</h2>
         <div class="contenedor-grid">
             <section id="contenedor-carro" class="contenedor-carro">
@@ -43,37 +43,37 @@
                 </div>
             </section>
             <section id="contenedor-cotizador" class="contenedor-cotizador inactive">
-                <div class="cotizador">
-                    <form class="cotizador-detalles">
+                <form class="cotizador-detalles" id="formulario-cotizador">
+                    <div class="cotizador">
                         <div>
                             <label for="envio">Elige el tipo de envío que prefieras:</label>
-                            <div><input type="radio" name="envio" value="aereo" id="aereo" class="radio"> Aéreo: 2 - 3 días</div>
-                            <div><input type="radio" name="envio" value="terrestre" id="terrestre" class="radio"> Terrestre: 3  - 5 días</div>
+                            <div><input type="radio" name="envio" value="aereo" id="aereo" class="radio" required> Aéreo: 2 - 3 días
+                            </div>
+                            <div><input type="radio" name="envio" value="terrestre" id="terrestre" class="radio"> Terrestre: 3 - 5 días
+                            </div>
                         </div>
                         <div id="contenedor-seguro">
                             <label for="asegurar">Deseas asegurar tu envío? (10% del valor de los productos)</label>
                             <input type="checkbox" name="asegurar" id="asegurar">
                         </div>
-                    </form>
-                    <div class="detalle-envio">
-                        <p id="valor-envio"> <!--- Relleno con JS ---> </p>
-                        <p id="valor-seguro"> <!--- Relleno con JS ---> </p>
-                        <p id="fecha-envio"> <!--- Relleno con JS ---> </p>
+                        <div class="detalle-envio">
+                            <p id="valor-envio"> <!--- Relleno con JS ---> </p>
+                            <p id="valor-seguro"> <!--- Relleno con JS ---> </p>
+                            <p id="fecha-envio"> <!--- Relleno con JS ---> </p>
+                        </div>
+                        <div class="carro-total">
+                            <p>Total:</p>
+                            <p class="total" id="total"> <!--- Relleno con JS ---> </p>
+                        </div>
                     </div>
-                    <div class="carro-total">
-                        <p>Total:</p>
-                        <p class="total" id="total"> <!--- Relleno con JS ---> </p>
+                    <div class="accion-comprar">
+                        <input type="submit" class="comprar" id="boton-comprar" value="Comprar">
                     </div>
-                </div>
-                <div class="accion-comprar">
-                    <button class="comprar" id="boton-comprar">Comprar</button>
-                </div>
+                </form>
             </section>
-
-            <p id="carro-comprado" class="inactive">Gracias por comprar. Te esperamos pronto!</p>
-
         </div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../js/cart.js"></script>
 </body>
 </html>
