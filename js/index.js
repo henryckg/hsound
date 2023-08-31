@@ -173,7 +173,7 @@ generarNumero()
 
 function agregarAlCarrito(){
 
-    botonAgregar = document.querySelectorAll(".boton-agregar")
+    let botonAgregar = document.querySelectorAll(".boton-agregar")
 
     botonAgregar.forEach(boton => {
         boton.addEventListener("click", agregarProducto)
