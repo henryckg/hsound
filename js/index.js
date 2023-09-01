@@ -165,10 +165,8 @@ botonMicrofonos.addEventListener("click", cargarMicrofonos)
 
 // Array para luego incluirlo en el LocalStorage
 
-let arrayCarro
-let carro = localStorage.getItem("carrito")
+let carro = localStorage.getItem("carrito") ? JSON.parse(localStorage.getItem("carrito")) : []
 
-carro ? arrayCarro = JSON.parse(carro) : arrayCarro = []
 generarNumero()
 
 function agregarAlCarrito(){
@@ -182,11 +180,13 @@ function agregarAlCarrito(){
 
             const productoAgregado = stockProductos.find(prod => prod.id == boton.id)
             
-            if(arrayCarro.some(prod => prod.id == boton.id)){
-                productoAgregado.cantidad++
-                productoAgregado.pesoVol = ((productoAgregado.alto * productoAgregado.ancho * productoAgregado.largo) / 5000) * productoAgregado.cantidad
+            if(carro.some(prod => prod.id === boton.id)){
+                const index = carro.findIndex(prod => prod.id == boton.id)
+                carro[index].cantidad++
+                carro[index].pesoVol = ((carro[index].alto * carro[index].ancho * carro[index].largo) / 5000) * carro[index].cantidad
+                console.log(carro)
             } else {
-                arrayCarro.push(productoAgregado)
+                carro.push(productoAgregado)
                 productoAgregado.pesoVol = (productoAgregado.alto * productoAgregado.ancho * productoAgregado.largo) / 5000
             }
 
@@ -204,13 +204,13 @@ function agregarAlCarrito(){
                 onClick: function(){} // Callback after click
             }).showToast();
 
-            localStorage.setItem("carrito", JSON.stringify(arrayCarro))
+            localStorage.setItem("carrito", JSON.stringify(carro))
             generarNumero()
         }   
     })
 }
 
 function generarNumero() {
-    let cantidadProductos = arrayCarro.reduce((acc, prod) => acc + prod.cantidad, 0)
+    let cantidadProductos = carro.reduce((acc, prod) => acc + prod.cantidad, 0)
     numeroCarrito.innerText = cantidadProductos
 }
