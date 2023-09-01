@@ -50,15 +50,27 @@ button{
 }
 
 .bi-cart2{
+    display: inline-block;
     font-size: 1.7rem;
+    border-radius: 10px;
+    transition: all .5s ease
+}
+
+.bi-cart2:hover{
+    transform: translateY(-3px);
 }
 
 .link-volver{
     color: black;
 }
 
+.menu-carrito{
+    margin: 11px
+}
+
 .contenedor-principal{
     margin: 1rem;
+    display: relative;
 }
 
 .contenedor-productos{
@@ -68,13 +80,51 @@ button{
     margin: 1rem
 }
 
+.detalles-producto{
+    background-color: rgb(209, 209, 209);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 5px
+}
+
 .imagen-producto{
     max-width: 100%;
     border-radius: 20px;
 }
 
-.boton-agregar{
+.boton-agregar, .boton-categoria, .link-volver{
+    display: inline-block;
     text-transform: uppercase;
+    background-color: black;
+    color: white;
+    border: none;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 1.2rem;
+    transition: 0.3s;
+}
+
+.boton-agregar:hover{
+    background-color: rgb(43, 43, 43);
+    transform: translateY(-3px) ;
+}
+
+.boton-categoria, .link-volver{
+    padding: 0.8rem;
+}
+
+.boton-categoria:hover{
+    background-color: rgb(43, 43, 43);
+    transform: translateY(-3px) ;
+}
+
+.link-volver:hover{
+    background-color: rgb(43, 43, 43);
+    transform: translateY(-3px) ;
 }
 
 .contenedor-grid{
@@ -90,6 +140,7 @@ button{
 
 .carro-vacio{
     margin-bottom: 1rem;
+    text-align: right;
 }
 
 .carro-productos{
@@ -118,6 +169,11 @@ button{
     background-color: transparent;
     border: 0;
     color: #911010;
+    transition: .3s
+}
+
+.carro-producto-eliminar:hover{
+    color: #690909
 }
 
 .carro-producto-eliminar i{
@@ -126,6 +182,17 @@ button{
 
 .vaciar-carro{
     text-transform: uppercase;
+    background-color: white;
+    border: #000 solid 2px;
+    padding: 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.vaciar-carro:hover{
+    background-color: #911010;
+    color: white;
 }
 
 .contenedor-cotizador{
@@ -137,10 +204,10 @@ button{
     border-radius: 10px;
     color: #000;
     padding: 0.8rem;
-    height: 30vw;
+    height: 30vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 
 .carro-acciones{
@@ -158,22 +225,88 @@ button{
 .carro-total{
     align-self: flex-end;
     display: flex;
-    gap: 1rem;
-    text-transform: uppercase;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.total-dolares{
+    display: flex;
     font-weight: 700;
+    text-transform: uppercase;
 }
 
 .accion-comprar{
     max-width: 100%;
     text-align: center;
-    margin: 1.2rem;
+    margin: 1 rem;  
 }
 
 .comprar{
     width: 100%;
     text-transform: uppercase;
+    background-color: #000;
+    color: white;
+    font-weight: 700;
+    padding: 1rem;
+    border: 2px solid black;
+    border-radius: 10px ;
+    transition: 0.2s;
+}
+
+.comprar:hover{
+    background-color: white;
+    color: black;
 }
 
 .inactive{
     display: none;
+    background-color: aliceblue;
+}
+
+.contenedor-checkout{
+    width: 50vw;
+    height: 50vh;
+    position: relative;
+    left: 25%;
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    background-color: rgb(230, 230, 230);
+}
+
+.formulario-checkout{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    color: #000;
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.text-input-checkout{
+    width: 50%;
+    height: 1.2rem;
+    padding: 0.8rem;
+    font-size: 1rem;
+}
+
+.btn-checkout, .text-checkout{
+    text-transform: uppercase;
+}
+
+.btn-checkout{
+    width: 30%;
+    padding: 0.5rem;
+    font-weight: 700;
+    background-color: #000;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    transition: .2s
+}
+
+.btn-checkout:hover{
+    background-color: rgb(43, 43, 43);
 }

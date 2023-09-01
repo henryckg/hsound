@@ -1,14 +1,63 @@
-const carroVacio = document.querySelector("#carro-vacio")
-const contenedorCarro = document.querySelector("#contenedor-carro")
-const carroProductos = document.querySelector("#carro-productos")
-const carroAcciones = document.querySelector("#carro-acciones")
+const main = document.querySelector("#contenedor-principal")
+const header = document.querySelector("#header")
+const contenedorGrid = document.querySelector("#contenedor-grid")
 const cotizador = document.querySelector("#contenedor-cotizador")
-const vaciarCarro = document.querySelector("#vaciar-carro")
-const botonComprar = document.querySelector("#boton-comprar")
-const msjComprado = document.querySelector("#carro-comprado")
-let botonEliminarProducto // Variable declarada antes para luego asignarle los botones de 'Eliminar Producto'
+const totalCarrito = document.querySelector("#total")
+const montoPesos = document.querySelector("#monto-pesos")
+
+let botonEliminarProducto
+let montoSeguro = 0
+let resultado = 0
+
+const contenedorBtnCarrito = document.createElement("div")
+contenedorBtnCarrito.classList.add("contenedor-boton-carrito")
+contenedorBtnCarrito.innerHTML = `
+    <a href="./pages/cart.html" class="boton-carrito"><i class="bi bi-cart2"></i></a>
+`
+header.appendChild(contenedorBtnCarrito)
+
+
+const contenedorCarro = document.createElement("section")
+contenedorCarro.classList.add("contenedor-carro")
+contenedorGrid.prepend(contenedorCarro)
+
+const carroVacio = document.createElement("p")
+carroVacio.classList.add("carro-vacio")
+carroVacio.innerText = "El carro de compras está vacío"
+contenedorCarro.prepend(carroVacio)
+
+const carroProductos = document.createElement("div")
+carroProductos.classList.add("carro-productos")
+carroProductos.classList.add("inactive")
+contenedorCarro.append(carroProductos)
+
+const carroAcciones = document.createElement("div")
+carroAcciones.classList.add("carro-acciones")
+carroAcciones.classList.add("inactive")
+carroAcciones.innerHTML = `<button id="vaciar-carro" class="vaciar-carro">Vaciar Carrito</button>`
+
+const vaciarCarro = carroAcciones.querySelector("#vaciar-carro")
+
+contenedorCarro.appendChild(carroAcciones)
+
+const checkout = document.createElement("div")
+    checkout.innerHTML = `
+        <form id="formulario-checkout" class="formulario-checkout">
+            <span class="text-checkout">Ingrese sus datos de contacto</span>
+            <input type="text" placeholder="Nombre completo" class="text-input-checkout" required>
+            <input type="email" placeholder="E-mail" class="text-input-checkout" required>
+            <input type="text" placeholder="Dirección de envío" class="text-input-checkout" required>
+            <span class="text-checkout">Ingrese su tarjeta</span>
+            <input type="text" placeholder="Número de tarjeta" class="text-input-checkout" required>
+            <input type="text" placeholder="CVC" class="text-input-checkout" required>
+            <input type="text" placeholder="MM/YY" class="text-input-checkout" required>
+            <input type="submit" class="btn-checkout" id="btn-checkout" value="Finalizar compra">
+        </form>
+    `
+checkout.classList.add("contenedor-checkout")
 
 let carro = JSON.parse(localStorage.getItem("carrito"))
+
 
 function cargarCarro(){
     if (carro.length >= 1) {
@@ -20,9 +69,9 @@ function cargarCarro(){
         carroProductos.innerHTML = ""
 
         carro.forEach(prod => {
-            const div = document.createElement("div")
-            div.classList.add("carro-producto")
-            div.innerHTML = `
+            const card = document.createElement("div")
+            card.classList.add("carro-producto")
+            card.innerHTML = `
             <img src=".${prod.imagen}" class="imagen-producto-carrito" alt="${prod.nombre}">
             <div class="carro-producto-nombre">
                 <p>Producto</p>
@@ -41,36 +90,53 @@ function cargarCarro(){
                 <h4>USD $${prod.precio * prod.cantidad}</h4>    
             </div>
             <button id="${prod.id}" class="carro-producto-eliminar">
-                <i class="bi bi-trash"></i>
+                <i class="bi bi-x-square-fill"></i>
             </button>
         `
-            carroProductos.appendChild(div)
+            carroProductos.appendChild(card)
         })
+        eliminarProducto()
+        validarTotal()
     } else{
         carroVacio.classList.remove("inactive")
         carroProductos.classList.add("inactive")
         carroAcciones.classList.add("inactive")
         cotizador.classList.add("inactive")
+        checkout.classList.add("inactive")
     }
-    eliminarProducto()
 }
 
 cargarCarro()
 
-
-
 vaciarCarro.onclick = () =>{
-    localStorage.clear()
-    carroVacio.classList.remove("inactive")
-    carroProductos.classList.add("inactive")
-    carroAcciones.classList.add("inactive")
-    cotizador.classList.add("inactive")
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: `${carro.reduce((acc, prod) => acc + prod.cantidad, 0)} productos están por ser eliminados del carrito.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#949494',
+        confirmButtonText: 'Sí, vaciar',
+        cancelButtonText: 'No, cancelar',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.clear()
+            carroVacio.classList.remove("inactive")
+            carroProductos.classList.add("inactive")
+            carroAcciones.classList.add("inactive")
+            cotizador.classList.add("inactive")
+            checkout.classList.add("inactive")
+            Swal.fire(
+                'Carrito vacío.',
+                'Los productos han sido eliminados',
+                'success'
+            )
+        }
+    })
 }
-
 
 function eliminarProducto(){
     botonEliminarProducto = document.querySelectorAll(".carro-producto-eliminar")
-
     botonEliminarProducto.forEach(boton => {
         boton.addEventListener("click", eliminarItem)
 
@@ -80,44 +146,36 @@ function eliminarProducto(){
 
             localStorage.setItem("carrito", JSON.stringify(carro));
             cargarCarro();
-
+            botonAsegurar.checked = false
+            valorSeguro.innerText = ""
         }
     })
-
-    
 }
-
 
 ////// CALCULADORA DE ENVIOS
 
-let resultado = 0
 let tarifaEnvio
-let valorAsegurado = 0
 const milisegundosPorDia = 86400000
 const plazoTerrestre = 5 * milisegundosPorDia
 const plazoAereo = 3 * milisegundosPorDia
 
 function calcularFechaEnvio(plazo){
-    //Función para generar fecha de entrega según el tipo de envío. El parámetro "plazo" será definido por las constantes "plazoTerrestre" y "plazoAereo"
-        const hoy = new Date
+        const hoy = new Date()
         const fechaFutura = new Date (hoy.getTime() + plazo)
-    
         return fechaFutura.toLocaleDateString()
 }
 
-const seguro = (x) => x * 10 / 100;
+const botonAsegurar = document.querySelector("#asegurar")
+const botonesRadio = document.querySelectorAll('input[name="envio"]')
 
-const botonAsegurar = document.querySelector("#asegurar");
-const botonesRadio = document.querySelectorAll('input[name="envio"]');
-const valorEnvio = document.querySelector("#valor-envio")
-const valorSeguro = document.querySelector("#valor-seguro")
-const totalCarrito = document.querySelector("#total")
-const fechaEnvio = document.querySelector("#fecha-envio")
+const detalleEnvio = document.querySelector("#detalle-envio")
+const valorEnvio = document.createElement("p")
+detalleEnvio.appendChild(valorEnvio)
+const valorSeguro = document.createElement("p")
+detalleEnvio.appendChild(valorSeguro)
+const fechaEnvio = document.createElement("p")
+detalleEnvio.appendChild(fechaEnvio)
 
-
-const totalPeso = carro.reduce((acumulador, prod) => acumulador + prod.peso, 0);
-const totalPesoVol = carro.reduce((acumulador, prod) => acumulador + prod.pesoVol, 0);
-const totalPrecios = carro.reduce((acumulador, prod) => acumulador + (prod.precio * prod.cantidad), 0);
 
 botonesRadio.forEach(boton => {
     boton.addEventListener("change", () => {
@@ -130,32 +188,20 @@ botonesRadio.forEach(boton => {
                 fechaEnvio.innerText = `Fecha máxima de entrega: ${calcularFechaEnvio(plazoTerrestre)}`
             }
 
-            asegurar()
+            carro = JSON.parse(localStorage.getItem("carrito"))
             
+            const totalPeso = carro.reduce((acumulador, prod) => acumulador + prod.peso, 0)
+            const totalPesoVol = carro.reduce((acumulador, prod) => acumulador + prod.pesoVol, 0)
+
             resultado = calcularResultado(totalPeso, totalPesoVol, tarifaEnvio)
             valorEnvio.innerText = `Valor envío: USD $${resultado.toFixed(2)}`
-            actualizarTotal()
-
+            validarTotal()
+            asegurar()
         }
     })
 })
 
-function asegurar(){
-    botonAsegurar.addEventListener("change", () => {
-        if (botonAsegurar.checked) {
-            valorAsegurado = seguro(totalPrecios)
-            valorSeguro.innerText = `Valor seguro: USD $${valorAsegurado.toFixed(2)}`
-            actualizarTotal()
-        } else {
-            valorAsegurado = 0
-            valorSeguro.innerText = ""
-            actualizarTotal()
-        }
-    })
-
-}
-
-function calcularResultado(peso, pesoVol, tarifa) {
+function calcularResultado(peso, pesoVol, tarifa) { //Determina el tipo de peso a multiplicar por la tarifa
     if (peso >= pesoVol) {
         return peso * tarifa
     } else {
@@ -163,18 +209,66 @@ function calcularResultado(peso, pesoVol, tarifa) {
     }
 }
 
-function actualizarTotal() {
-    const total = resultado + valorAsegurado + totalPrecios
-    totalCarrito.innerText = `USD $${total.toFixed(2)}`
+const seguro = (x) => x * 10 / 100;
+
+function asegurar(){
+    botonAsegurar.addEventListener("change", () => {
+        if (botonAsegurar.checked) {
+            carro = JSON.parse(localStorage.getItem("carrito"))
+            const totalPrecios = carro.reduce((acumulador, prod) => acumulador + (prod.precio * prod.cantidad), 0);
+            montoSeguro = seguro(totalPrecios)
+            valorSeguro.innerText = `Valor seguro: USD $${montoSeguro.toFixed(2)}`
+            validarTotal()
+        } else {
+            montoSeguro = 0
+            valorSeguro.innerText = ""
+            validarTotal()
+        }
+    })
 }
 
-actualizarTotal()
+const formularioCotizador = document.querySelector("#formulario-cotizador")
 
+formularioCotizador.addEventListener("submit", (e) =>{
+    e.preventDefault()
 
-botonComprar.addEventListener("click", comprarCarro)
-function comprarCarro(){
-    msjComprado.classList.remove("inactive")
-    cotizador.classList.add("inactive")
-    contenedorCarro.classList.add("inactive")   
-    localStorage.clear()
+    main.appendChild(checkout)
+
+    const formularioCheckout = document.querySelector("#formulario-checkout")
+    formularioCheckout.addEventListener("submit", hacerCheckout)
+
+    function hacerCheckout(e){
+        e.preventDefault()
+    
+        Swal.fire(
+            '¡Compra exitosa!',
+            'Muchas gracias por tu compra. Te esperamos pronto',
+            'success'
+        )
+        
+        carroVacio.classList.remove("inactive")
+        checkout.classList.add("inactive")
+        cotizador.classList.add("inactive")
+        carroProductos.classList.add("inactive")
+        carroAcciones.classList.add("inactive")   
+        main.classList.remove("efecto-checkout")
+        localStorage.clear()
+    }
+})
+
+function validarTotal (){
+    let totalValidado = carro.reduce((acc, prod) => acc + (prod.cantidad * prod.precio), 0)
+    let valorTotal = totalValidado + montoSeguro + resultado
+    let totalDolares = valorTotal.toFixed(2)
+    totalCarrito.innerText = `Total: USD $${totalDolares}`
+
+    fetch("https://api.bluelytics.com.ar/v2/latest")
+    .then((res) => res.json())
+    .then((data) => {
+        datoDolar = data.oficial;
+        valorDolar = datoDolar.value_avg;
+        let cambioEnPesos = totalDolares * valorDolar
+        let totalPesos = cambioEnPesos.toFixed(2)
+        montoPesos.innerText = `(Valor en ARS: $${totalPesos})`
+    })
 }

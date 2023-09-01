@@ -3,39 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Importamos fuentes Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700&family=Noto+Sans:wght@300;400&family=Oxanium:wght@300;500&display=swap" rel="stylesheet">
-    <!-- Importamos íconos de Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <!-- Importamos Estilo Propio -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="./css/style.css"> 
     <title>H-Sound</title>
 </head>
 <body>
-    <header>
+    <header id="header">
         <a href="./index.html"><h1 class="logo">H-Sound</h1></a>
         <nav class="menu">
             <ul class="lista-menu">
-                <li><button id="todos">Todos los productos</button></li>
-                <li><button id="audifonos">Audífonos</button></li>
-                <li><button id="parlantes">Parlantes</button></li>
-                <li><button id="microfonos">Micrófonos</button></li>
+                <li><button id="todos" class="boton-categoria">Todos los productos</button></li>
+                <li><button id="audifonos" class="boton-categoria">Audífonos</button></li>
+                <li><button id="parlantes" class="boton-categoria">Parlantes</button></li>
+                <li><button id="microfonos" class="boton-categoria">Micrófonos</button></li>
             </ul>
         </nav>
-        <div class="contenedor-boton-carrito">
-            <a href="./pages/cart.html" class="boton-carrito"><i class="bi bi-cart2"></i></a>
-        </div>
     </header>
     <main id="main" class="contenedor-principal">
         <section class="contenedor-productos">
-            <!-- Los productos serán ingresados por JavaScript -->
+            <!-- Productos incluidos desde JS -->
         </section>
     </main>
-    <footer>
-
-    </footer>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="./js/index.js"></script>
 </body>
 </html>

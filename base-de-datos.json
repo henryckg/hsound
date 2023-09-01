@@ -1,0 +1,110 @@
+[
+    {
+        "id": "audifono-01",
+        "nombre": "AKG K240",
+        "precio": 90,
+        "categoria": "Audífonos",
+        "imagen": "./img/akg-k240.jpeg",
+        "alto": 32,
+        "ancho": 22,
+        "largo": 12,
+        "peso": 1.2,
+        "cantidad": 1
+    },
+    {
+        "id": "audifono-02",
+        "nombre": "ATH-M50x",
+        "precio": 170,
+        "categoria": "Audífonos",
+        "imagen": "./img/audiotechnica-athm50x.jpeg",
+        "alto": 33,
+        "ancho": 23,
+        "largo": 15,
+        "peso": 1.4,
+        "cantidad": 1
+    },
+    {
+        "id": "audifono-03",
+        "nombre": "Sony WH-1000XM4",
+        "precio": 220,
+        "categoria": "Audífonos",
+        "imagen": "./img/sony-wh1000xm4.jpeg",
+        "alto": 29,
+        "ancho": 21,
+        "largo": 10,
+        "peso": 1,
+        "cantidad": 1
+    },
+    {
+        "id": "parlante-01",
+        "nombre": "Adam T7V",
+        "precio": 330,
+        "categoria": "Parlantes",
+        "imagen": "./img/adam-t7v.jpeg",
+        "alto": 42,
+        "ancho": 29,
+        "largo": 34,
+        "peso": 3.2,
+        "cantidad": 1
+    },
+    {
+        "id": "parlante-02",
+        "nombre": "Genelec 8030C",
+        "precio": 550,
+        "categoria": "Parlantes",
+        "imagen": "./img/genelec-8030c.jpeg",
+        "alto": 27,
+        "ancho": 26,
+        "largo": 30,
+        "peso": 2.4,
+        "cantidad": 1
+    },
+    {
+        "id": "parlante-03",
+        "nombre": "Yamaha HS8",
+        "precio": 250,
+        "categoria": "Parlantes",
+        "imagen": "./img/yamaha-hs8.jpeg",
+        "alto": 35,
+        "ancho": 22,
+        "largo": 29,
+        "peso": 1.8,
+        "cantidad": 1
+    },
+    {
+        "id": "microfono-01",
+        "nombre": "Shure SM7B",
+        "precio": 440,
+        "categoria": "Micrófonos",
+        "imagen": "./img/shure-sm7b.jpeg",
+        "alto": 21,
+        "ancho": 22,
+        "largo": 12,
+        "peso": 1.2,
+        "cantidad": 1
+    },
+    {
+        "id": "microfono-02",
+        "nombre": "AKG C414",
+        "precio": 375,
+        "categoria": "Micrófonos",
+        "imagen": "./img/akg-c414.jpeg",
+        "alto": 19,
+        "ancho": 12,
+        "largo": 8,
+        "peso": 1,
+        "cantidad": 1
+    },
+    {
+        "id": "microfono-03",
+        "nombre": "Sennheiser MD421",
+        "precio": 280,
+        "categoria": "Micrófonos",
+        "imagen": "./img/sennheiser-md421.jpeg",
+        "alto": 17,
+        "ancho": 16,
+        "largo": 9,
+        "peso": 1.1,
+        "cantidad": 1
+    }
+]
