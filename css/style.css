@@ -58,9 +58,6 @@ button{
 
 .bi-cart2:hover{
     transform: translateY(-3px);
-    /* background-color: black;
-    color: white;
-    border-radius: 10px; */
 }
 
 .link-volver{
@@ -228,9 +225,14 @@ button{
 .carro-total{
     align-self: flex-end;
     display: flex;
-    gap: 1rem;
-    text-transform: uppercase;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.total-dolares{
+    display: flex;
     font-weight: 700;
+    text-transform: uppercase;
 }
 
 .accion-comprar{
@@ -269,17 +271,6 @@ button{
     border: 2px solid rgb(0, 0, 0);
     border-radius: 10px;
     background-color: rgb(230, 230, 230);
-}
-
-.efecto-checkout::before{
-    content: '';
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
 }
 
 .formulario-checkout{

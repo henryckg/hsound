@@ -3,9 +3,10 @@ const header = document.querySelector("#header")
 const contenedorGrid = document.querySelector("#contenedor-grid")
 const cotizador = document.querySelector("#contenedor-cotizador")
 const totalCarrito = document.querySelector("#total")
+const montoPesos = document.querySelector("#monto-pesos")
 
 let botonEliminarProducto
-let valorAsegurado = 0
+let montoSeguro = 0
 let resultado = 0
 
 const contenedorBtnCarrito = document.createElement("div")
@@ -145,6 +146,8 @@ function eliminarProducto(){
 
             localStorage.setItem("carrito", JSON.stringify(carro));
             cargarCarro();
+            botonAsegurar.checked = false
+            valorSeguro.innerText = ""
         }
     })
 }
@@ -213,11 +216,11 @@ function asegurar(){
         if (botonAsegurar.checked) {
             carro = JSON.parse(localStorage.getItem("carrito"))
             const totalPrecios = carro.reduce((acumulador, prod) => acumulador + (prod.precio * prod.cantidad), 0);
-            valorAsegurado = seguro(totalPrecios)
-            valorSeguro.innerText = `Valor seguro: USD $${valorAsegurado.toFixed(2)}`
+            montoSeguro = seguro(totalPrecios)
+            valorSeguro.innerText = `Valor seguro: USD $${montoSeguro.toFixed(2)}`
             validarTotal()
         } else {
-            valorAsegurado = 0
+            montoSeguro = 0
             valorSeguro.innerText = ""
             validarTotal()
         }
@@ -230,7 +233,6 @@ formularioCotizador.addEventListener("submit", (e) =>{
     e.preventDefault()
 
     main.appendChild(checkout)
-    // main.classList.add("efecto-checkout")
 
     const formularioCheckout = document.querySelector("#formulario-checkout")
     formularioCheckout.addEventListener("submit", hacerCheckout)
@@ -256,22 +258,17 @@ formularioCotizador.addEventListener("submit", (e) =>{
 
 function validarTotal (){
     let totalValidado = carro.reduce((acc, prod) => acc + (prod.cantidad * prod.precio), 0)
-    let valorTotal = totalValidado + valorAsegurado + resultado
-    totalCarrito.innerText = `USD $${valorTotal.toFixed(2)}`
-    }
+    let valorTotal = totalValidado + montoSeguro + resultado
+    let totalDolares = valorTotal.toFixed(2)
+    totalCarrito.innerText = `Total: USD $${totalDolares}`
 
-
-// fetch("https://api.bluelytics.com.ar/v2/latest")
-//     .then((res) => res.json())
-//     .then((data) => {
-//         validarTotal()
-//         valorDolar = data.oficial;
-//         const contenedorTotal = document.querySelector("#contenedor-total")
-//         const contenedorTotalPesos = document.createElement("div")
-//         contenedorTotal.appendChild(contenedorTotalPesos)
-//         contenedorTotalPesos.innerHTML = `
-//             <p>Total en pesos:</p>
-//             <p class="total"> ARS $${valorDolar.value_avg * totalPrecios} </p>  
-//         `
-//     })
-
+    fetch("https://api.bluelytics.com.ar/v2/latest")
+    .then((res) => res.json())
+    .then((data) => {
+        datoDolar = data.oficial;
+        valorDolar = datoDolar.value_avg;
+        let cambioEnPesos = totalDolares * valorDolar
+        let totalPesos = cambioEnPesos.toFixed(2)
+        montoPesos.innerText = `(Valor en ARS: $${totalPesos})`
+    })
+}
