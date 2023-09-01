@@ -1,4 +1,37 @@
-////// Array vacio donde se van ingresando los productos
+const body = document.body
+const header = document.querySelector("#header")
+const main = document.querySelector("#main")
+const contenedorProductos = document.querySelector(".contenedor-productos")
+const botonTodosLosProductos = document.querySelector("#todos")
+const botonAudifonos = document.querySelector("#audifonos")
+const botonParlantes = document.querySelector("#parlantes")
+const botonMicrofonos = document.querySelector("#microfonos")
+const tituloCategoria = document.createElement("h2")
+let botonAgregar
+
+const contenedorNroCarrito = document.createElement("div")
+contenedorNroCarrito.classList.add("contenedor-boton-carrito")
+contenedorNroCarrito.innerHTML = `
+    <a href="./pages/cart.html" class="boton-carrito"><i class="bi bi-cart2"></i></a>
+`
+header.appendChild(contenedorNroCarrito)
+const numeroCarrito = document.createElement("span")
+contenedorNroCarrito.appendChild(numeroCarrito)
+
+const fecha = new Date()
+const footer = document.createElement("footer")
+body.appendChild(footer)
+
+footer.innerHTML = `
+    <span>H-Sound - ${fecha.getFullYear()} Todos los derechos reservados</span>
+`
+footer.style.backgroundColor = '#3d3d3d'
+footer.style.height = '3rem'
+footer.style.color = 'white'
+footer.style.display = 'flex'
+footer.style.justifyContent = 'center'
+footer.style.alignItems = 'center'
+
 
 let stockProductos = []
 
@@ -12,49 +45,14 @@ const cargaBaseDeDatos = async () => {
 cargaBaseDeDatos()
 
 
-////// LLAMADOS DEL DOM
-
-const body = document.body
-const header = document.getElementsByTagName("header")
-const main = document.querySelector("#main")
-const contenedorProductos = document.querySelector(".contenedor-productos")
-const botonTodosLosProductos = document.querySelector("#todos")
-const botonAudifonos = document.querySelector("#audifonos")
-const botonParlantes = document.querySelector("#parlantes")
-const botonMicrofonos = document.querySelector("#microfonos")
-const tituloCategoria = document.createElement("h2")
-const numeroCarrito = document.querySelector('#numero-carro')
-let botonAgregar // Variable declarada antes para luego asignarle los botones de 'Añadir al Carrito'
-
-
-// Footer
-
-const fecha = new Date()
-const footer = document.createElement("footer")
-
-footer.innerHTML = `
-    <span>H-Sound - ${fecha.getFullYear()} Todos los derechos reservados</span>
-`
-
-footer.style.backgroundColor = '#3d3d3d'
-footer.style.height = '3rem'
-footer.style.color = 'white'
-footer.style.display = 'flex'
-footer.style.justifyContent = 'center'
-footer.style.alignItems = 'center'
-
-body.appendChild(footer)
-
-/////// FUNCIONES
+botonTodosLosProductos.addEventListener("click", cargarTodosProductos)
 
 function cargarTodosProductos(){
-
     contenedorProductos.innerHTML = ""
     tituloCategoria.innerText = "Todos los productos"
     main.prepend(tituloCategoria)
 
     stockProductos.forEach(prod => {
-
         const prodCard = document.createElement("div")
         prodCard.classList.add("producto")
         prodCard.innerHTML = `
@@ -67,71 +65,42 @@ function cargarTodosProductos(){
         `
         contenedorProductos.appendChild(prodCard)    
     });
-    
     agregarAlCarrito()
 }
 
+botonAudifonos.addEventListener("click", cargarAudifonos)
 
 function cargarAudifonos(){
-
     contenedorProductos.innerHTML = ""
-
-    const audifonos = stockProductos.filter((prod) => prod.categoria === "Audífonos")
-    audifonos.forEach(prod => {
-    
-        const prodCard = document.createElement("div")
-        prodCard.classList.add("producto")
-        prodCard.innerHTML = `
-            <img src="${prod.imagen}" class="imagen-producto" alt="${prod.nombre}">
-            <div class="detalles-producto">
-                <h3 class="nombre-producto">${prod.nombre}</h3>
-                <p class="precio">USD $${prod.precio}</p>
-                <button id="${prod.id}" class="boton-agregar">Añadir al carrito</button>
-            </div>
-        `
-        contenedorProductos.appendChild(prodCard)
-    
-    })
-    
     tituloCategoria.innerText = "Audífonos"
     main.prepend(tituloCategoria)
-    
+    const audifonos = stockProductos.filter((prod) => prod.categoria === "Audífonos")
+
+    audifonos.forEach(prod => {    
+        const prodCard = document.createElement("div")
+        prodCard.classList.add("producto")
+        prodCard.innerHTML = `
+            <img src="${prod.imagen}" class="imagen-producto" alt="${prod.nombre}">
+            <div class="detalles-producto">
+                <h3 class="nombre-producto">${prod.nombre}</h3>
+                <p class="precio">USD $${prod.precio}</p>
+                <button id="${prod.id}" class="boton-agregar">Añadir al carrito</button>
+            </div>
+        `
+        contenedorProductos.appendChild(prodCard)
+    })
     agregarAlCarrito()
 }
+
+botonParlantes.addEventListener("click", cargarParlantes)
 
 function cargarParlantes(){
-
     contenedorProductos.innerHTML = ""
-
-    const parlantes = stockProductos.filter((prod) => prod.categoria === "Parlantes")
-    parlantes.forEach(prod => {
-    
-        const prodCard = document.createElement("div")
-        prodCard.classList.add("producto")
-        prodCard.innerHTML = `
-            <img src="${prod.imagen}" class="imagen-producto" alt="${prod.nombre}">
-            <div class="detalles-producto">
-                <h3 class="nombre-producto">${prod.nombre}</h3>
-                <p class="precio">USD $${prod.precio}</p>
-                <button id="${prod.id}" class="boton-agregar">Añadir al carrito</button>
-            </div>
-        `
-        contenedorProductos.appendChild(prodCard)
-    })
-
     tituloCategoria.innerText = "Parlantes"
     main.prepend(tituloCategoria)
-    
-    agregarAlCarrito()
-}
+    const parlantes = stockProductos.filter((prod) => prod.categoria === "Parlantes")
 
-function cargarMicrofonos(){
-
-    contenedorProductos.innerHTML = ""
-
-    const microfonos = stockProductos.filter((prod) => prod.categoria === "Micrófonos")
-    microfonos.forEach(prod => {
-    
+    parlantes.forEach(prod => {
         const prodCard = document.createElement("div")
         prodCard.classList.add("producto")
         prodCard.innerHTML = `
@@ -144,38 +113,46 @@ function cargarMicrofonos(){
         `
         contenedorProductos.appendChild(prodCard)
     })
-
-    tituloCategoria.innerText = "Micrófonos"
-    main.prepend(tituloCategoria)
-
     agregarAlCarrito()
 }
 
+botonMicrofonos.addEventListener("click", cargarMicrofonos)
+
+function cargarMicrofonos(){
+    contenedorProductos.innerHTML = ""
+    tituloCategoria.innerText = "Micrófonos"
+    main.prepend(tituloCategoria)
+    const microfonos = stockProductos.filter((prod) => prod.categoria === "Micrófonos")
+
+    microfonos.forEach(prod => {
+        const prodCard = document.createElement("div")
+        prodCard.classList.add("producto")
+        prodCard.innerHTML = `
+            <img src="${prod.imagen}" class="imagen-producto" alt="${prod.nombre}">
+            <div class="detalles-producto">
+                <h3 class="nombre-producto">${prod.nombre}</h3>
+                <p class="precio">USD $${prod.precio}</p>
+                <button id="${prod.id}" class="boton-agregar">Añadir al carrito</button>
+            </div>
+        `
+        contenedorProductos.appendChild(prodCard)
+    })
+    agregarAlCarrito()
+}
 
 cargarTodosProductos()
 
-///// EVENTOS
-
-botonTodosLosProductos.addEventListener("click", cargarTodosProductos)
-botonAudifonos.addEventListener("click", cargarAudifonos)
-botonParlantes.addEventListener("click", cargarParlantes)
-botonMicrofonos.addEventListener("click", cargarMicrofonos)
-
-// Array para luego incluirlo en el LocalStorage
 
 let carro = localStorage.getItem("carrito") ? JSON.parse(localStorage.getItem("carrito")) : []
-
 generarNumero()
 
 function agregarAlCarrito(){
-
     let botonAgregar = document.querySelectorAll(".boton-agregar")
 
     botonAgregar.forEach(boton => {
         boton.addEventListener("click", agregarProducto)
 
         function agregarProducto(){
-
             const productoAgregado = stockProductos.find(prod => prod.id == boton.id)
             
             if(carro.find(prod => prod.id === boton.id)){
@@ -200,7 +177,7 @@ function agregarAlCarrito(){
                 style: {
                 background: "linear-gradient(to right, #3d3d3d, #939393)",
                 },
-                onClick: function(){} // Callback after click
+                onClick: function(){}
             }).showToast();
 
             generarNumero()

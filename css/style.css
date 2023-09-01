@@ -264,8 +264,7 @@ button{
 .contenedor-checkout{
     width: 50vw;
     height: 50vh;
-    position: fixed;
-    top: 25%;
+    position: relative;
     left: 25%;
     border: 2px solid rgb(0, 0, 0);
     border-radius: 10px;
