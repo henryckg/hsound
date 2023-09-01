@@ -138,10 +138,6 @@ const valorSeguro = document.querySelector("#valor-seguro")
 
 const fechaEnvio = document.querySelector("#fecha-envio")
 
-const totalPeso = carro.reduce((acumulador, prod) => acumulador + prod.peso, 0);
-const totalPesoVol = carro.reduce((acumulador, prod) => acumulador + prod.pesoVol, 0);
-const totalPrecios = carro.reduce((acumulador, prod) => acumulador + (prod.precio * prod.cantidad), 0);
-
 botonesRadio.forEach(boton => {
     boton.addEventListener("change", () => {
         if (boton.checked) {
@@ -154,7 +150,12 @@ botonesRadio.forEach(boton => {
             }
 
             asegurar()
+
+            carro = JSON.parse(localStorage.getItem("carrito"))
             
+            const totalPeso = carro.reduce((acumulador, prod) => acumulador + prod.peso, 0)
+            const totalPesoVol = carro.reduce((acumulador, prod) => acumulador + prod.pesoVol, 0)
+
             resultado = calcularResultado(totalPeso, totalPesoVol, tarifaEnvio)
             valorEnvio.innerText = `Valor envío: USD $${resultado.toFixed(2)}`
             validarTotal()
@@ -168,6 +169,8 @@ const seguro = (x) => x * 10 / 100;
 function asegurar(){
     botonAsegurar.addEventListener("change", () => {
         if (botonAsegurar.checked) {
+            carro = JSON.parse(localStorage.getItem("carrito"))
+            const totalPrecios = carro.reduce((acumulador, prod) => acumulador + (prod.precio * prod.cantidad), 0);
             valorAsegurado = seguro(totalPrecios)
             valorSeguro.innerText = `Valor seguro: USD $${valorAsegurado.toFixed(2)}`
             validarTotal()
@@ -189,7 +192,6 @@ function calcularResultado(peso, pesoVol, tarifa) {
     }
 }
 
-
 const formularioCotizador = document.querySelector("#formulario-cotizador")
 
 formularioCotizador.addEventListener("submit", (e) =>{
@@ -203,6 +205,10 @@ formularioCotizador.addEventListener("submit", (e) =>{
             <input type="text" placeholder="Nombre completo" class="text-input-checkout" required>
             <input type="email" placeholder="E-mail" class="text-input-checkout" required>
             <input type="text" placeholder="Dirección de envío" class="text-input-checkout" required>
+            <span class="text-checkout">Ingrese su tarjeta</span>
+            <input type="text" placeholder="Número de tarjeta" class="text-input-checkout" required>
+            <input type="text" placeholder="CVC" class="text-input-checkout" required>
+            <input type="text" placeholder="MM/YY" class="text-input-checkout" required>
             <input type="submit" class="btn-checkout" id="btn-checkout" value="Finalizar compra">
         </form>
     `
@@ -234,17 +240,31 @@ formularioCotizador.addEventListener("submit", (e) =>{
     }
 })
 
+
 function validarTotal (){
     let totalValidado = carro.reduce((acc, prod) => acc + (prod.cantidad * prod.precio), 0)
     let valorTotal = totalValidado + valorAsegurado + resultado
     totalCarrito.innerText = `USD $${valorTotal.toFixed(2)}`
-}
+    }
 
 
-console.log(carro)
-console.log(totalPeso)
-console.log(totalPesoVol)
-console.log(totalPrecios)
+
+
+// fetch("https://api.bluelytics.com.ar/v2/latest")
+//     .then((res) => res.json())
+//     .then((data) => {
+//         validarTotal()
+//         valorDolar = data.oficial;
+//         const contenedorTotal = document.querySelector("#contenedor-total")
+//         const contenedorTotalPesos = document.createElement("div")
+//         contenedorTotal.appendChild(contenedorTotalPesos)
+//         contenedorTotalPesos.innerHTML = `
+//             <p>Total en pesos:</p>
+//             <p class="total"> ARS $${valorDolar.value_avg * totalPrecios} </p>  
+//         `
+//     })
+
+
 
 
 

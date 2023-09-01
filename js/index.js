@@ -15,9 +15,9 @@ cargaBaseDeDatos()
 ////// LLAMADOS DEL DOM
 
 const body = document.body
+const header = document.getElementsByTagName("header")
 const main = document.querySelector("#main")
 const contenedorProductos = document.querySelector(".contenedor-productos")
-const botonesMenu = document.querySelectorAll(".boton-categoria")
 const botonTodosLosProductos = document.querySelector("#todos")
 const botonAudifonos = document.querySelector("#audifonos")
 const botonParlantes = document.querySelector("#parlantes")
@@ -55,17 +55,17 @@ function cargarTodosProductos(){
 
     stockProductos.forEach(prod => {
 
-        const div = document.createElement("div")
-        div.classList.add("producto")
-        div.innerHTML = `
+        const prodCard = document.createElement("div")
+        prodCard.classList.add("producto")
+        prodCard.innerHTML = `
             <img src="${prod.imagen}" class="imagen-producto" alt="${prod.nombre}">
-            <div>
+            <div class="detalles-producto">
                 <h3 class="nombre-producto">${prod.nombre}</h3>
                 <p class="precio">USD $${prod.precio}</p>
                 <button id="${prod.id}" class="boton-agregar">Añadir al carrito</button>
             </div>
         `
-        contenedorProductos.appendChild(div)    
+        contenedorProductos.appendChild(prodCard)    
     });
     
     agregarAlCarrito()
@@ -79,17 +79,17 @@ function cargarAudifonos(){
     const audifonos = stockProductos.filter((prod) => prod.categoria === "Audífonos")
     audifonos.forEach(prod => {
     
-        const div = document.createElement("div")
-        div.classList.add("producto")
-        div.innerHTML = `
+        const prodCard = document.createElement("div")
+        prodCard.classList.add("producto")
+        prodCard.innerHTML = `
             <img src="${prod.imagen}" class="imagen-producto" alt="${prod.nombre}">
-            <div>
+            <div class="detalles-producto">
                 <h3 class="nombre-producto">${prod.nombre}</h3>
                 <p class="precio">USD $${prod.precio}</p>
                 <button id="${prod.id}" class="boton-agregar">Añadir al carrito</button>
             </div>
         `
-        contenedorProductos.appendChild(div)
+        contenedorProductos.appendChild(prodCard)
     
     })
     
@@ -106,17 +106,17 @@ function cargarParlantes(){
     const parlantes = stockProductos.filter((prod) => prod.categoria === "Parlantes")
     parlantes.forEach(prod => {
     
-        const div = document.createElement("div")
-        div.classList.add("producto")
-        div.innerHTML = `
+        const prodCard = document.createElement("div")
+        prodCard.classList.add("producto")
+        prodCard.innerHTML = `
             <img src="${prod.imagen}" class="imagen-producto" alt="${prod.nombre}">
-            <div>
+            <div class="detalles-producto">
                 <h3 class="nombre-producto">${prod.nombre}</h3>
                 <p class="precio">USD $${prod.precio}</p>
                 <button id="${prod.id}" class="boton-agregar">Añadir al carrito</button>
             </div>
         `
-        contenedorProductos.appendChild(div)
+        contenedorProductos.appendChild(prodCard)
     })
 
     tituloCategoria.innerText = "Parlantes"
@@ -132,17 +132,17 @@ function cargarMicrofonos(){
     const microfonos = stockProductos.filter((prod) => prod.categoria === "Micrófonos")
     microfonos.forEach(prod => {
     
-        const div = document.createElement("div")
-        div.classList.add("producto")
-        div.innerHTML = `
+        const prodCard = document.createElement("div")
+        prodCard.classList.add("producto")
+        prodCard.innerHTML = `
             <img src="${prod.imagen}" class="imagen-producto" alt="${prod.nombre}">
-            <div>
+            <div class="detalles-producto">
                 <h3 class="nombre-producto">${prod.nombre}</h3>
                 <p class="precio">USD $${prod.precio}</p>
                 <button id="${prod.id}" class="boton-agregar">Añadir al carrito</button>
             </div>
         `
-        contenedorProductos.appendChild(div)
+        contenedorProductos.appendChild(prodCard)
     })
 
     tituloCategoria.innerText = "Micrófonos"
@@ -182,7 +182,6 @@ function agregarAlCarrito(){
                 const productoEnCarro = carro.find(prod => prod.id == boton.id)
                 productoEnCarro.cantidad++
                 productoEnCarro.pesoVol = ((productoEnCarro.alto * productoEnCarro.ancho * productoEnCarro.largo) / 5000) * productoEnCarro.cantidad
-                console.log(carro)
             } else {
                 carro.push(productoAgregado)
                 productoAgregado.pesoVol = (productoAgregado.alto * productoAgregado.ancho * productoAgregado.largo) / 5000
