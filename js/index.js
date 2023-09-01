@@ -45,8 +45,6 @@ footer.style.alignItems = 'center'
 
 body.appendChild(footer)
 
-
-
 /////// FUNCIONES
 
 function cargarTodosProductos(){
@@ -180,15 +178,17 @@ function agregarAlCarrito(){
 
             const productoAgregado = stockProductos.find(prod => prod.id == boton.id)
             
-            if(carro.some(prod => prod.id === boton.id)){
-                const index = carro.findIndex(prod => prod.id == boton.id)
-                carro[index].cantidad++
-                carro[index].pesoVol = ((carro[index].alto * carro[index].ancho * carro[index].largo) / 5000) * carro[index].cantidad
+            if(carro.find(prod => prod.id === boton.id)){
+                const productoEnCarro = carro.find(prod => prod.id == boton.id)
+                productoEnCarro.cantidad++
+                productoEnCarro.pesoVol = ((productoEnCarro.alto * productoEnCarro.ancho * productoEnCarro.largo) / 5000) * productoEnCarro.cantidad
                 console.log(carro)
             } else {
                 carro.push(productoAgregado)
                 productoAgregado.pesoVol = (productoAgregado.alto * productoAgregado.ancho * productoAgregado.largo) / 5000
             }
+            
+            localStorage.setItem("carrito", JSON.stringify(carro))
 
             Toastify({
                 text: `${productoAgregado.nombre} fue agregado al carro`,
@@ -204,7 +204,6 @@ function agregarAlCarrito(){
                 onClick: function(){} // Callback after click
             }).showToast();
 
-            localStorage.setItem("carrito", JSON.stringify(carro))
             generarNumero()
         }   
     })
