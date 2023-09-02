@@ -1,3 +1,4 @@
+//Llamado de distintos elementos del DOM para ser usados a lo largo del código
 const main = document.querySelector("#contenedor-principal")
 const header = document.querySelector("#header")
 const contenedorGrid = document.querySelector("#contenedor-grid")
@@ -5,17 +6,18 @@ const cotizador = document.querySelector("#contenedor-cotizador")
 const totalCarrito = document.querySelector("#total")
 const montoPesos = document.querySelector("#monto-pesos")
 
+//Se declaran variables de scope global
 let botonEliminarProducto
 let montoSeguro = 0
 let resultado = 0
 
+//Creación de elementos HTML.
 const contenedorBtnCarrito = document.createElement("div")
 contenedorBtnCarrito.classList.add("contenedor-boton-carrito")
 contenedorBtnCarrito.innerHTML = `
     <a href="./pages/cart.html" class="boton-carrito"><i class="bi bi-cart2"></i></a>
 `
 header.appendChild(contenedorBtnCarrito)
-
 
 const contenedorCarro = document.createElement("section")
 contenedorCarro.classList.add("contenedor-carro")
@@ -35,13 +37,12 @@ const carroAcciones = document.createElement("div")
 carroAcciones.classList.add("carro-acciones")
 carroAcciones.classList.add("inactive")
 carroAcciones.innerHTML = `<button id="vaciar-carro" class="vaciar-carro">Vaciar Carrito</button>`
-
 const vaciarCarro = carroAcciones.querySelector("#vaciar-carro")
-
 contenedorCarro.appendChild(carroAcciones)
 
+//Este elemento será incluido en el HTML cuando sea accionado el evento del "formularioCotizador" en la calculadora de envíos.
 const checkout = document.createElement("div")
-    checkout.innerHTML = `
+checkout.innerHTML = `
         <form id="formulario-checkout" class="formulario-checkout">
             <span class="text-checkout">Ingrese sus datos de contacto</span>
             <input type="text" placeholder="Nombre completo" class="text-input-checkout" required>
@@ -56,19 +57,20 @@ const checkout = document.createElement("div")
     `
 checkout.classList.add("contenedor-checkout")
 
+//Carga de productos desde el Local Storage.
 let carro = JSON.parse(localStorage.getItem("carrito"))
 
-
 function cargarCarro(){
-    if (carro.length >= 1) {
+    //Condicional para determinar si se imprimen productos o se muestra mensaje de carro vacío.
+    if (carro && carro.length >= 1) {
         carroVacio.classList.add("inactive")
         carroProductos.classList.remove("inactive")
         carroAcciones.classList.remove("inactive")
         cotizador.classList.remove("inactive")
 
-        carroProductos.innerHTML = ""
+        carroProductos.innerHTML = "" //Primero vaciamos el contenedor para evitar que se dupliquen los elementos cada vez que entramos al carro.
 
-        carro.forEach(prod => {
+        carro.forEach(prod => { //Imprimimos los productos en el contenedor.
             const card = document.createElement("div")
             card.classList.add("carro-producto")
             card.innerHTML = `
@@ -108,6 +110,7 @@ function cargarCarro(){
 
 cargarCarro()
 
+//Evento del botón "vaciar carro"
 vaciarCarro.onclick = () =>{
     Swal.fire({
         title: '¿Estás seguro?',
@@ -138,23 +141,41 @@ vaciarCarro.onclick = () =>{
 function eliminarProducto(){
     botonEliminarProducto = document.querySelectorAll(".carro-producto-eliminar")
     botonEliminarProducto.forEach(boton => {
+        //Evento de los botones-ícono "x"
         boton.addEventListener("click", eliminarItem)
 
         function eliminarItem() {
-            const productoEliminado = carro.findIndex(prod => prod.id == boton.id);
+            //Tomamos el índice del producto seleccionado en el carro para eliminarlo del mismo.
+            const productoEliminado = carro.findIndex(prod => prod.id == boton.id); 
             carro.splice(productoEliminado, 1);
 
-            localStorage.setItem("carrito", JSON.stringify(carro));
-            cargarCarro();
+            localStorage.setItem("carrito", JSON.stringify(carro)) //Guardamos en el Local Storage las modificaciones.
+            cargarCarro()
+
+            //Se resetean valores del seguro en la calculadora de envíos.
             botonAsegurar.checked = false
             valorSeguro.innerText = ""
         }
     })
 }
 
-////// CALCULADORA DE ENVIOS
+////// Sección "Calculadora de Envíos"
 
-let tarifaEnvio
+//Llamados de elementos
+const formularioCotizador = document.querySelector("#formulario-cotizador")
+const botonAsegurar = document.querySelector("#asegurar")
+const botonesRadio = document.querySelectorAll('input[name="envio"]')
+const detalleEnvio = document.querySelector("#detalle-envio")
+
+//Creación de elementos
+const valorEnvio = document.createElement("p")
+detalleEnvio.appendChild(valorEnvio)
+const valorSeguro = document.createElement("p")
+detalleEnvio.appendChild(valorSeguro)
+const fechaEnvio = document.createElement("p")
+detalleEnvio.appendChild(fechaEnvio)
+
+//Generación de fecha de entrega del envío.
 const milisegundosPorDia = 86400000
 const plazoTerrestre = 5 * milisegundosPorDia
 const plazoAereo = 3 * milisegundosPorDia
@@ -165,21 +186,11 @@ function calcularFechaEnvio(plazo){
         return fechaFutura.toLocaleDateString()
 }
 
-const botonAsegurar = document.querySelector("#asegurar")
-const botonesRadio = document.querySelectorAll('input[name="envio"]')
-
-const detalleEnvio = document.querySelector("#detalle-envio")
-const valorEnvio = document.createElement("p")
-detalleEnvio.appendChild(valorEnvio)
-const valorSeguro = document.createElement("p")
-detalleEnvio.appendChild(valorSeguro)
-const fechaEnvio = document.createElement("p")
-detalleEnvio.appendChild(fechaEnvio)
-
-
+//Evento de botones radio para la elección del tipo de envío.
 botonesRadio.forEach(boton => {
     boton.addEventListener("change", () => {
         if (boton.checked) {
+            let tarifaEnvio
             if (boton.value === "aereo") {
                 tarifaEnvio = 8
                 fechaEnvio.innerText = `Fecha máxima de entrega: ${calcularFechaEnvio(plazoAereo)}`
@@ -188,20 +199,23 @@ botonesRadio.forEach(boton => {
                 fechaEnvio.innerText = `Fecha máxima de entrega: ${calcularFechaEnvio(plazoTerrestre)}`
             }
 
+            //Llamamos productos del Local Storage por si existen modificaciones después de elegir la tarifa de envío.
             carro = JSON.parse(localStorage.getItem("carrito"))
             
+            //Suma de propiedades del total de los productos en el carro de compra.
             const totalPeso = carro.reduce((acumulador, prod) => acumulador + prod.peso, 0)
             const totalPesoVol = carro.reduce((acumulador, prod) => acumulador + prod.pesoVol, 0)
 
             resultado = calcularResultado(totalPeso, totalPesoVol, tarifaEnvio)
             valorEnvio.innerText = `Valor envío: USD $${resultado.toFixed(2)}`
             validarTotal()
-            asegurar()
+            asegurar() //Llamamos a la función para que el seguro se genere sólo si se elige tarifa de envío.
         }
     })
 })
 
-function calcularResultado(peso, pesoVol, tarifa) { //Determina el tipo de peso a multiplicar por la tarifa
+//Determina el tipo de peso a multiplicar por la tarifa
+function calcularResultado(peso, pesoVol, tarifa) { 
     if (peso >= pesoVol) {
         return peso * tarifa
     } else {
@@ -211,6 +225,7 @@ function calcularResultado(peso, pesoVol, tarifa) { //Determina el tipo de peso 
 
 const seguro = (x) => x * 10 / 100;
 
+//Imprime el valor del seguro.
 function asegurar(){
     botonAsegurar.addEventListener("change", () => {
         if (botonAsegurar.checked) {
@@ -227,25 +242,23 @@ function asegurar(){
     })
 }
 
-const formularioCotizador = document.querySelector("#formulario-cotizador")
-
+//Evento del formulario de la calculadora de envíos.
 formularioCotizador.addEventListener("submit", (e) =>{
     e.preventDefault()
+    
+    main.appendChild(checkout) //Se incluye elemento creado previamente al inicio del código.
 
-    main.appendChild(checkout)
-
+    //Creación y evento del formulario checkout
     const formularioCheckout = document.querySelector("#formulario-checkout")
     formularioCheckout.addEventListener("submit", hacerCheckout)
 
     function hacerCheckout(e){
         e.preventDefault()
-    
         Swal.fire(
             '¡Compra exitosa!',
             'Muchas gracias por tu compra. Te esperamos pronto',
             'success'
         )
-        
         carroVacio.classList.remove("inactive")
         checkout.classList.add("inactive")
         cotizador.classList.add("inactive")
@@ -256,13 +269,13 @@ formularioCotizador.addEventListener("submit", (e) =>{
     }
 })
 
-function validarTotal (){
+function validarTotal (){ //Suma el precio de todos los productos en el carro más el envío y monto del seguro.
     let totalValidado = carro.reduce((acc, prod) => acc + (prod.cantidad * prod.precio), 0)
     let valorTotal = totalValidado + montoSeguro + resultado
     let totalDolares = valorTotal.toFixed(2)
     totalCarrito.innerText = `Total: USD $${totalDolares}`
 
-    fetch("https://api.bluelytics.com.ar/v2/latest")
+    fetch("https://api.bluelytics.com.ar/v2/latest") //API para imprimir el total en pesos argentinos.
     .then((res) => res.json())
     .then((data) => {
         datoDolar = data.oficial;

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./css/style.css"> 
     <title>H-Sound</title>
 </head>
-<body>
+<body id="body">
     <header id="header">
         <a href="./index.html"><h1 class="logo">H-Sound</h1></a>
         <nav class="menu">
@@ -27,8 +27,11 @@
         <section class="contenedor-productos">
             <!-- Productos incluidos desde JS -->
         </section>
+        <div id="notificacion-toast" class="notificacion-toast">
+            <!-- Generadas por JS al agregar al carrito -->
+        </div>
     </main>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="./js/index.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/footer.js"></script>
 </body>
 </html>

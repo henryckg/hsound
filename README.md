@@ -1,8 +1,11 @@
-# Ecommerce con Calculadora de Envíos
+# H-Sound: e-commerce con Calculadora de Envíos
 
 <br> 
 
-Este Ecommerce cuenta con un simulador para cálculos de envíos, el cual se describe a continuación:
+E-commerce de artículos de audio.
+Muestra los productos de forma dinámica según su categoría.
+
+Adicionalmente, cuenta con un simulador para cálculos de envíos, el cual se describe a continuación:
 
 El principio de este simulador es calcular el valor de un envío, que puede ser de uno o varios productos. Su funcionamiento se basa en elegir la tarifa según el tipo de envío y se aplicará a las dimensiones o peso de los productos en el carrito, para después sumarle el seguro el cual es opcional.
 
@@ -15,4 +18,4 @@ De acuerda a la tarifa elegida, el simulador se encargará de multiplicarla por 
 
 Posteriormente, solicitará al usuario si quiere asegurar el envío, el cual será el equivalente al 10% del valor total del carrito.
 
-Finalmente, mostrará el resultado con el valor del envío, seguro y fecha máxima de entrega, según sea el caso.
+Finalmente, en el detalle se mostrará la fecha máxima de entrega, según sea el caso. Además, imprime el resultado del valor total de los productos, sumado con el valor del envío y seguro. Dicho total, también es mostrado en pesos argentinos (valor generado mediante una API)
